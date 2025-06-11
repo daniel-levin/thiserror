@@ -160,6 +160,7 @@ fn check_field_attrs(fields: &[Field]) -> Result<()> {
     let mut source_field = None;
     let mut backtrace_field = None;
     let mut has_backtrace = false;
+    let mut boxing_field = None;
     for field in fields {
         if let Some(from) = field.attrs.from {
             if from_field.is_some() {
@@ -196,6 +197,15 @@ fn check_field_attrs(fields: &[Field]) -> Result<()> {
             ));
         }
         has_backtrace |= field.is_backtrace();
+        if let Some(boxing) = field.attrs.boxing {
+            if boxing_field.is_some() {
+                return Err(Error::new_spanned(
+                    boxing.original,
+                    "duplicate #[boxing] attribute",
+                ));
+            }
+            boxing_field = Some(field);
+        }
     }
     if let (Some(from_field), Some(source_field)) = (from_field, source_field) {
         if from_field.member != source_field.member {
@@ -225,6 +235,14 @@ fn check_field_attrs(fields: &[Field]) -> Result<()> {
             ));
         }
     }
+
+    if let (None, Some(boxing_field)) = (from_field, boxing_field) {
+        return Err(Error::new_spanned(
+            boxing_field.attrs.boxing.unwrap().original,
+            "attribute #[boxing] requires the field to also have a #[from] attribute",
+        ));
+    }
+
     Ok(())
 }
 

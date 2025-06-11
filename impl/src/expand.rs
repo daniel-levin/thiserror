@@ -165,8 +165,10 @@ fn impl_struct(input: Struct) -> TokenStream {
 
     let from_impl = input.from_field().map(|from_field| {
         let span = from_field.attrs.from.unwrap().span;
+        let backtrace_field = input.distinct_backtrace_field();
         let from = unoptional_type(from_field.ty);
         let source_var = Ident::new("source", span);
+        let body = from_initializer(from_field, backtrace_field, &source_var);
         let from_function = quote! {
             fn from(#source_var: #from) -> Self {
                 #ty #body
@@ -191,10 +193,8 @@ fn impl_struct(input: Struct) -> TokenStream {
 
     let boxing_impl = input.boxing_field().map(|from_field| {
         let span = from_field.attrs.from.unwrap().span;
-        let backtrace_field = input.distinct_backtrace_field();
         let from = unoptional_type(from_field.ty);
         let source_var = Ident::new("source", span);
-        let body = from_initializer(from_field, backtrace_field, &source_var);
         let from_function = quote! {
             fn from(#source_var: #from) -> Self {
                 ::std::boxed::Box::new(From::from(#source_var))

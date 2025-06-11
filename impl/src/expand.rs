@@ -466,6 +466,36 @@ fn impl_enum(input: Enum) -> TokenStream {
         })
     });
 
+    let boxing_impls = input.variants.iter().filter_map(|variant| {
+        let from_field = variant.from_field()?;
+        let span = from_field.attrs.from.unwrap().span;
+        let backtrace_field = variant.distinct_backtrace_field();
+        let variant = &variant.ident;
+        let from = unoptional_type(from_field.ty);
+        let source_var = Ident::new("source", span);
+        let body = from_initializer(from_field, backtrace_field, &source_var);
+        let from_function = quote! {
+            fn from(#source_var: #from) -> Self {
+                #ty::#variant #body
+            }
+        };
+        let from_impl = quote_spanned! {span=>
+            #[automatically_derived]
+            impl #impl_generics ::core::convert::From<#from> for #ty #ty_generics #where_clause {
+                #from_function
+            }
+        };
+        Some(quote! {
+            #[allow(
+                deprecated,
+                unused_qualifications,
+                clippy::elidable_lifetime_names,
+                clippy::needless_lifetimes,
+            )]
+            #from_impl
+        })
+    });
+
     if input.generics.type_params().next().is_some() {
         let self_token = <Token![Self]>::default();
         error_inferred_bounds.insert(self_token, Trait::Debug);

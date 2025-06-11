@@ -20,6 +20,10 @@ impl Struct<'_> {
         let backtrace_field = self.backtrace_field()?;
         distinct_backtrace_field(backtrace_field, self.from_field())
     }
+
+    pub(crate) fn boxing_field(&self) -> Option<&Field> {
+        boxing_field(&self.fields)
+    }
 }
 
 impl Enum<'_> {
@@ -66,6 +70,10 @@ impl Variant<'_> {
     pub(crate) fn distinct_backtrace_field(&self) -> Option<&Field> {
         let backtrace_field = self.backtrace_field()?;
         distinct_backtrace_field(backtrace_field, self.from_field())
+    }
+
+    pub(crate) fn boxing_field(&self) -> Option<&Field> {
+        boxing_field(&self.fields)
     }
 }
 

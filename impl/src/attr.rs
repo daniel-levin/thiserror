@@ -124,6 +124,10 @@ pub fn get(input: &[Attribute]) -> Result<Attrs> {
                 span,
             });
         } else if attr.path().is_ident("boxing") {
+            if attrs.boxing.is_some() {
+                return Err(Error::new_spanned(attr, "duplicate #[boxing] attribute"));
+            }
+
             let span = (attr.pound_token.span)
                 .join(attr.bracket_token.span.join())
                 .unwrap_or(attr.path().get_ident().unwrap().span());

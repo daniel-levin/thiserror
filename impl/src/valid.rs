@@ -197,6 +197,7 @@ fn check_field_attrs(fields: &[Field]) -> Result<()> {
             ));
         }
         has_backtrace |= field.is_backtrace();
+
         if let Some(boxing) = field.attrs.boxing {
             if boxing_field.is_some() {
                 return Err(Error::new_spanned(

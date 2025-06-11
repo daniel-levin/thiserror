@@ -15,6 +15,7 @@ pub struct Attrs<'a> {
     pub from: Option<From<'a>>,
     pub transparent: Option<Transparent<'a>>,
     pub fmt: Option<Fmt<'a>>,
+    pub boxing: Option<Boxing<'a>>,
 }
 
 #[derive(Clone)]
@@ -53,6 +54,12 @@ pub struct Fmt<'a> {
     pub path: ExprPath,
 }
 
+#[derive(Copy, Clone)]
+pub struct Boxing<'a> {
+    pub original: &'a Attribute,
+    pub span: Span,
+}
+
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Debug)]
 pub enum Trait {
     Debug,
@@ -74,6 +81,7 @@ pub fn get(input: &[Attribute]) -> Result<Attrs> {
         from: None,
         transparent: None,
         fmt: None,
+        boxing: None,
     };
 
     for attr in input {
@@ -115,6 +123,13 @@ pub fn get(input: &[Attribute]) -> Result<Attrs> {
                 original: attr,
                 span,
             });
+        } else if attr.path().is_ident("boxing") {
+            if attrs.from.is_none() {
+                return Err(Error::new_spanned(
+                    attr,
+                    "attribute #[boxing] requires a corresponding #[from]",
+                ));
+            }
         }
     }
 

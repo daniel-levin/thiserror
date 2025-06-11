@@ -11,7 +11,7 @@ pub struct LargeError {
 pub enum Autoboxed {
     Large(
         #[from]
-        #[box_from]
+        #[boxing]
         LargeError,
     ),
 }

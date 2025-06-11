@@ -1,0 +1,5 @@
+error: attribute #[boxing] requires a corresponding #[from]
+ --> tests/ui/boxing-missing-from.rs:6:14
+  |
+6 |     NotThere(#[boxing] std::io::Error),
+  |              ^^^^^^^^^

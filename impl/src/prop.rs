@@ -137,6 +137,12 @@ fn distinct_backtrace_field<'a, 'b>(
     }
 }
 
+fn boxing_field<'a, 'b>(fields: &'a [Field<'b>]) -> Option<&'a Field<'b>> {
+    fields
+        .iter()
+        .find(|Field { attrs, .. }| attrs.from.is_some() && attrs.boxing.is_some())
+}
+
 fn type_is_backtrace(ty: &Type) -> bool {
     let path = match ty {
         Type::Path(ty) => &ty.path,

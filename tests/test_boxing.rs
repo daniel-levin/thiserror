@@ -20,7 +20,7 @@ pub fn direct_return_large() -> Result<(), LargeError> {
     Err(LargeError { a: [0; 2048] })
 }
 
-fn autobox() -> Result<(), Box<Autoboxed>> {
+pub fn autobox() -> Result<(), Box<Autoboxed>> {
     let _ = direct_return_large()?;
 
     Ok(())

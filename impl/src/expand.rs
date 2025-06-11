@@ -468,9 +468,7 @@ fn impl_enum(input: Enum) -> TokenStream {
 
     let boxing_impls = input.variants.iter().filter_map(|variant| {
         let from_field = variant.boxing_field()?;
-        let span = from_field.attrs.from.unwrap().span;
-        let backtrace_field = variant.distinct_backtrace_field();
-        let variant = &variant.ident;
+        let span = from_field.attrs.boxing.unwrap().span;
         let from = unoptional_type(from_field.ty);
         let source_var = Ident::new("source", span);
         let from_function = quote! {

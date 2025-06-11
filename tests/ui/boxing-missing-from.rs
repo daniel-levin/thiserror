@@ -6,4 +6,10 @@ pub enum Missing {
     NotThere(#[boxing] std::io::Error),
 }
 
+#[derive(Error, Debug)]
+#[error("...")]
+pub struct AlsoMissing {
+    #[boxing] err: std::io::Error,
+}
+
 fn main() {}

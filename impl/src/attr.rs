@@ -124,12 +124,6 @@ pub fn get(input: &[Attribute]) -> Result<Attrs> {
                 span,
             });
         } else if attr.path().is_ident("boxing") {
-            if attrs.from.is_none() {
-                return Err(Error::new_spanned(
-                    attr,
-                    "attribute #[boxing] requires a corresponding #[from]",
-                ));
-            }
             let span = (attr.pound_token.span)
                 .join(attr.bracket_token.span.join())
                 .unwrap_or(attr.path().get_ident().unwrap().span());

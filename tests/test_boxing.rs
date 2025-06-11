@@ -24,6 +24,14 @@ pub struct Autoboxed2 {
     err: LargeError,
 }
 
+#[derive(Error, Debug)]
+#[error("...")]
+pub struct Autoboxed3 {
+    #[boxing]
+    #[from]
+    err: LargeError,
+}
+
 pub fn direct_return_large() -> Result<(), LargeError> {
     Err(LargeError { a: [0; 2048] })
 }
@@ -35,6 +43,12 @@ pub fn autobox() -> Result<(), Box<Autoboxed>> {
 }
 
 pub fn autobox2() -> Result<(), Box<Autoboxed2>> {
+    let _ = direct_return_large()?;
+
+    Ok(())
+}
+
+pub fn autobox3() -> Result<(), Box<Autoboxed3>> {
     let _ = direct_return_large()?;
 
     Ok(())

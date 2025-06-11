@@ -145,6 +145,13 @@ fn check_non_field_attrs(attrs: &Attrs) -> Result<()> {
         ));
     }
 
+    if let Some(boxing) = &attrs.boxing {
+        return Err(Error::new_spanned(
+            boxing.original,
+            "attribute #[boxing] expected on a specific field also having #[from] attribute ",
+        ));
+    }
+
     Ok(())
 }
 

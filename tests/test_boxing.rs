@@ -16,7 +16,7 @@ pub enum Autoboxed {
     ),
 }
 
-fn direct_return_large() -> Result<(), LargeError> {
+pub fn direct_return_large() -> Result<(), LargeError> {
     Err(LargeError { a: [0; 2048] })
 }
 

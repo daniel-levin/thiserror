@@ -130,6 +130,13 @@ pub fn get(input: &[Attribute]) -> Result<Attrs> {
                     "attribute #[boxing] requires a corresponding #[from]",
                 ));
             }
+            let span = (attr.pound_token.span)
+                .join(attr.bracket_token.span.join())
+                .unwrap_or(attr.path().get_ident().unwrap().span());
+            attrs.boxing = Some(Boxing {
+                original: attr,
+                span,
+            });
         }
     }
 
